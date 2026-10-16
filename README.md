@@ -1,5 +1,7 @@
 # Jukebox Saloon
 
+<img width="1916" height="911" alt="Screenshot 2026-10-16 184241" src="https://github.com/user-attachments/assets/4e4a8543-58ed-44d6-929a-ecf7c3857852" />
+
 A simple web jukebox built for the Dustline saloon trial on Pixl. 
 [Live Demo](https://saloonjukebox-ruby.vercel.app/)
 
