@@ -82,13 +82,20 @@
             }
         ];
 
-        let queue = [];
-        let currentIndex = 0;
+        let queue = JSON.parse(localStorage.getItem('jukebox_queue')) || [];
+        let currentIndex = parseInt(localStorage.getItem('jukebox_current_index')) || 0;
 
         const audio = document.getElementById("audio-player");
         const currentTitle = document.getElementById("current-title");
         const songListEl = document.getElementById("song-list");
         const queueListEl = document.getElementById("queue-list");
+        
+        function saveState() {
+            localStorage.setItem('jukebox_queue', JSON.stringify(queue))
+            localStorage.setItem('jukebox_current_index', currentIndex)
+        }
+
+
 
         function renderLibrary() {
             songListEl.innerHTML = "";
@@ -111,11 +118,24 @@
         function addToQueue(songId) {
             const song = songs.find(s => s.id === songId);
             queue.push(song);
+
+            saveState()
             updateQueueUI();
 
             if (audio.paused && queue.length === 1) {
                 playQueueItem(0);
             }
+        }
+
+        function clearQueue() {
+            queue = [];
+            currentIndex = 0;
+            localStorage.removeItem('jukebox_queue');
+            localStorage.removeItem('jukebox_queue');
+            audio.pause();
+            audio.src = "";
+            currentTitle = "No track to play"
+            updateQueueUI();
         }
 
         function updateQueueUI() {
