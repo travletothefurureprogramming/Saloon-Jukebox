@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="el">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,15 +18,14 @@
             
             <div class="bg-stone-950 p-6 rounded-xl border border-amber-900/40 shadow-xl flex flex-col">
                 <h2 class="text-amber-400 text-2xl font-bold pb-4 border-b border-amber-900/30">Saloon Playlist</h2>
-                <div id="song-list" class="space-y-3 mt-4 overflow-y-auto max-h-[400px]">
-                </div>
+                <div id="song-list" class="space-y-3 mt-4 overflow-y-auto max-h-[400px]"></div>
             </div>
 
             <div class="flex flex-col gap-6">
                 <div class="bg-stone-950 p-6 rounded-xl border border-amber-900/40 shadow-xl">
                     <h2 class="text-amber-400 text-2xl font-bold pb-4 border-b border-amber-900/30">Now Playing</h2>
                     
-                    <p id="current-title" class="text-lg font-semibold text-amber-200 my-4 text-center">No track playing</p>
+                    <p id="current-title" class="text-lg font-semibold text-amber-200 my-4 text-center">No track currently playing</p>
                     
                     <audio id="audio-player" class="hidden"></audio>
 
@@ -40,18 +39,20 @@
                     </div>
 
                     <div class="mt-4">
-                        <label class="text-xs text-amber-300 block mb-1">Sound volume</label>
+                        <label class="text-xs text-amber-300 block mb-1">Volume:</label>
                         <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="1" oninput="changeVolume(this.value)" class="w-full accent-amber-500 cursor-pointer">
                     </div>
                 </div>
 
                 <div class="bg-stone-950 p-6 rounded-xl border border-amber-900/40 shadow-xl flex-grow">
-                    <h2 class="text-amber-400 text-2xl font-bold pb-4 border-b border-amber-900/30">Queue</h2>
-                    <button onclick="clearQueue()" class="bg-red-800 hover:bg-red-700 text-stone-100 font-bold px-3 py-1 text-xs rounded transition">
-                        Clear
-                    </button>
+                    <div class="flex justify-between items-center pb-4 border-b border-amber-900/30">
+                        <h2 class="text-amber-400 text-2xl font-bold">Queue</h2>
+                        <button onclick="clearQueue()" class="bg-red-800 hover:bg-red-700 text-stone-100 font-bold px-3 py-1 text-xs rounded transition">
+                            Clear Queue
+                        </button>
+                    </div>
                     <ul id="queue-list" class="space-y-2 mt-4 text-sm">
-                        <li class="text-stone-500 italic">The queue is empty....</li>
+                        <li class="text-stone-500 italic">Queue is empty...</li>
                     </ul>
                 </div>
             </div>
@@ -60,7 +61,7 @@
     </main>
 
     <footer class="text-center p-4 text-xs text-stone-500">
-        Dustline Saloon Jukebox · Built for Pixl
+        Dustline Saloon Jukebox
     </footer>
 
     <script>
@@ -92,13 +93,11 @@
         const currentTitle = document.getElementById("current-title");
         const songListEl = document.getElementById("song-list");
         const queueListEl = document.getElementById("queue-list");
-        
+
         function saveState() {
-            localStorage.setItem('jukebox_queue', JSON.stringify(queue))
-            localStorage.setItem('jukebox_current_index', currentIndex)
+            localStorage.setItem('jukebox_queue', JSON.stringify(queue));
+            localStorage.setItem('jukebox_current_index', currentIndex);
         }
-
-
 
         function renderLibrary() {
             songListEl.innerHTML = "";
@@ -121,8 +120,7 @@
         function addToQueue(songId) {
             const song = songs.find(s => s.id === songId);
             queue.push(song);
-
-            saveState()
+            saveState();
             updateQueueUI();
 
             if (audio.paused && queue.length === 1) {
@@ -130,20 +128,9 @@
             }
         }
 
-        function clearQueue() {
-            queue = [];
-            currentIndex = 0;
-            localStorage.removeItem('jukebox_queue');
-            localStorage.removeItem('jukebox_queue');
-            audio.pause();
-            audio.src = "";
-            currentTitle = "No track to play"
-            updateQueueUI();
-        }
-
         function updateQueueUI() {
             if (queue.length === 0) {
-                queueListEl.innerHTML = '<li class="text-stone-500 italic">The queue is empty....</li>';
+                queueListEl.innerHTML = '<li class="text-stone-500 italic">Queue is empty...</li>';
                 return;
             }
             queueListEl.innerHTML = "";
@@ -157,17 +144,19 @@
 
         function playQueueItem(index) {
             if (index >= queue.length) {
-                currentTitle.innerText = "End of queue - Add more songs!";
+                currentTitle.innerText = "End of queue - Add more tracks!";
                 audio.src = "";
                 currentIndex = 0;
+                saveState();
                 updateQueueUI();
                 return;
             }
             currentIndex = index;
             const song = queue[currentIndex];
             audio.src = song.url;
-            audio.play().catch(e => console.log("Αναμονή αλληλεπίδρασης χρήστη για autoplay"));
-            currentTitle.innerText = `▶ ${song.title} — ${song.artist}`;
+            audio.play().catch(e => console.log("Waiting for user interaction for autoplay"));
+            currentTitle.innerText = `${song.title} — ${song.artist}`;
+            saveState();
             updateQueueUI();
         }
 
@@ -175,7 +164,6 @@
             playQueueItem(currentIndex + 1);
         };
 
-        
         function togglePlay() {
             if (audio.paused) {
                 if (audio.src) {
@@ -194,13 +182,25 @@
             }
         }
 
-
         function changeVolume(value) {
             audio.volume = value;
         }
 
+        function clearQueue() {
+            queue = [];
+            currentIndex = 0;
+            localStorage.removeItem('jukebox_queue');
+            localStorage.removeItem('jukebox_current_index');
+            audio.pause();
+            audio.src = "";
+            currentTitle.innerText = "No track currently playing";
+            updateQueueUI();
+        }
 
         renderLibrary();
+        if (queue.length > 0) {
+            updateQueueUI();
+        }
     </script>
 </body>
 </html>
