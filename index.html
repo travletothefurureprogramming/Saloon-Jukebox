@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jukebox Saloon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-stone-900 text-stone-100 min-h-screen flex flex-col justify-between">
+
+    <header class="p-6 text-center">
+        <h1 class="text-amber-500 font-bold text-5xl md:text-7xl tracking-wider">Jukebox Saloon</h1>
+        <h2 class="text-amber-100/70 text-lg md:text-xl mt-2">Welcome to the Wild West</h2>
+    </header>
+
+    <main class="max-w-4xl mx-auto p-6 w-full flex-grow">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <div class="bg-stone-950 p-6 rounded-xl border border-amber-900/40 shadow-xl flex flex-col">
+                <h2 class="text-amber-400 text-2xl font-bold pb-4 border-b border-amber-900/30">Saloon Playlist</h2>
+                <div id="song-list" class="space-y-3 mt-4 overflow-y-auto max-h-[400px]">
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-6">
+                <div class="bg-stone-950 p-6 rounded-xl border border-amber-900/40 shadow-xl">
+                    <h2 class="text-amber-400 text-2xl font-bold pb-4 border-b border-amber-900/30">Now Playing</h2>
+                    
+                    <p id="current-title" class="text-lg font-semibold text-amber-200 my-4 text-center">No track playing</p>
+                    
+                    <audio id="audio-player" class="hidden"></audio>
+
+                    <div class="flex justify-center gap-3 my-4">
+                        <button onclick="togglePlay()" class="bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold px-4 py-2 rounded transition">
+                            Play / Pause
+                        </button>
+                        <button onclick="skipSong()" class="bg-amber-800 hover:bg-amber-700 text-amber-100 font-bold px-4 py-2 rounded transition">
+                            Skip
+                        </button>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="text-xs text-amber-300 block mb-1">Sound volume</label>
+                        <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="1" oninput="changeVolume(this.value)" class="w-full accent-amber-500 cursor-pointer">
+                    </div>
+                </div>
+
+                <div class="bg-stone-950 p-6 rounded-xl border border-amber-900/40 shadow-xl flex-grow">
+                    <h2 class="text-amber-400 text-2xl font-bold pb-4 border-b border-amber-900/30">Queue</h2>
+                    <ul id="queue-list" class="space-y-2 mt-4 text-sm">
+                        <li class="text-stone-500 italic">The queue is empty....</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="text-center p-4 text-xs text-stone-500">
+        Dustline Saloon Jukebox · Built for Pixl
+    </footer>
+
+    <script>
+        const songs = [
+            {
+                id: 1,
+                title: "Saloon Ragtime Vibe",
+                artist: "Wild West Band",
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+            },
+            {
+                id: 2,
+                title: "Dusty Road Acoustic",
+                artist: "Outlaw Joe",
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+            },
+            {
+                id: 3,
+                title: "Midnight Piano Blues",
+                artist: "Saloon Pianist",
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+            }
+        ];
+
+        let queue = [];
+        let currentIndex = 0;
+
+        const audio = document.getElementById("audio-player");
+        const currentTitle = document.getElementById("current-title");
+        const songListEl = document.getElementById("song-list");
+        const queueListEl = document.getElementById("queue-list");
+
+        function renderLibrary() {
+            songListEl.innerHTML = "";
+            songs.forEach(song => {
+                const div = document.createElement("div");
+                div.className = "flex justify-between items-center bg-stone-900 p-3 rounded border border-amber-900/30";
+                div.innerHTML = `
+                    <div>
+                        <p class="text-amber-200 font-semibold">${song.title}</p>
+                        <p class="text-xs text-stone-400">${song.artist}</p>
+                    </div>
+                    <button onclick="addToQueue(${song.id})" class="bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold px-3 py-1.5 text-xs rounded transition">
+                        + Add
+                    </button>
+                `;
+                songListEl.appendChild(div);
+            });
+        }
+
+        function addToQueue(songId) {
+            const song = songs.find(s => s.id === songId);
+            queue.push(song);
+            updateQueueUI();
+
+            if (audio.paused && queue.length === 1) {
+                playQueueItem(0);
+            }
+        }
+
+        function updateQueueUI() {
+            if (queue.length === 0) {
+                queueListEl.innerHTML = '<li class="text-stone-500 italic">The queue is empty....</li>';
+                return;
+            }
+            queueListEl.innerHTML = "";
+            queue.forEach((song, index) => {
+                const li = document.createElement("li");
+                li.className = `p-2 rounded flex justify-between items-center ${index === currentIndex ? 'bg-amber-950/60 text-amber-300 font-bold border border-amber-600/50' : 'bg-stone-900 text-stone-300'}`;
+                li.innerHTML = `<span>${index + 1}. ${song.title}</span>`;
+                queueListEl.appendChild(li);
+            });
+        }
+
+        function playQueueItem(index) {
+            if (index >= queue.length) {
+                currentTitle.innerText = "End of queue - Add more songs!";
+                audio.src = "";
+                currentIndex = 0;
+                updateQueueUI();
+                return;
+            }
+            currentIndex = index;
+            const song = queue[currentIndex];
+            audio.src = song.url;
+            audio.play().catch(e => console.log("Αναμονή αλληλεπίδρασης χρήστη για autoplay"));
+            currentTitle.innerText = `▶ ${song.title} — ${song.artist}`;
+            updateQueueUI();
+        }
+
+        audio.onended = function() {
+            playQueueItem(currentIndex + 1);
+        };
+
+        
+        function togglePlay() {
+            if (audio.paused) {
+                if (audio.src) {
+                    audio.play();
+                } else if (queue.length > 0) {
+                    playQueueItem(0);
+                }
+            } else {
+                audio.pause();
+            }
+        }
+
+        function skipSong() {
+            if (queue.length > 0) {
+                playQueueItem(currentIndex + 1);
+            }
+        }
+
+
+        function changeVolume(value) {
+            audio.volume = value;
+        }
+
+
+        renderLibrary();
+    </script>
+</body>
+</html>
