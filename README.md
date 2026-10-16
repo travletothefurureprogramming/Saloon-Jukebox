@@ -2,7 +2,7 @@
 
 > *A web-based jukebox built for the Dustline saloon trial on Pixl.*
 
-[![Live Demo](https://img.shields.io/badge/status-live-success.svg)](https://saloonjukebox-ruby.vercel.app/))
+[![Live Demo](https://img.shields.io/badge/status-live-success.svg)](https://saloonjukebox-ruby.vercel.app/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Welcome traveler! The Dustline saloon has plenty of speakers, but nobody to spin the records. **Jukebox Saloon** is a lightweight, zero-install web application that lets anyone queue up classic western tunes and enjoy them right inside the browser.
