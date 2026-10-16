@@ -1,53 +1,23 @@
-# 🌵 Jukebox Saloon
+# Jukebox Saloon
 
-> *A web-based jukebox built for the Dustline saloon trial on Pixl.*
+A simple web jukebox built for the Dustline saloon trial on Pixl. 
+[Live Demo](https://saloonjukebox-ruby.vercel.app/)
 
-[![Live Demo](https://img.shields.io/badge/status-live-success.svg)](https://saloonjukebox-ruby.vercel.app/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+## Features
+- Western track list
+- Auto-playing queue system
+- Basic audio controls (play, pause, skip, volume)
+- Tailwind CSS styling
 
-Welcome traveler! The Dustline saloon has plenty of speakers, but nobody to spin the records. **Jukebox Saloon** is a lightweight, zero-install web application that lets anyone queue up classic western tunes and enjoy them right inside the browser.
+## Tech Stack
+- HTML5
+- Tailwind CSS
+- Vanilla JavaScript
 
-<img width="1916" height="911" alt="image" src="https://github.com/user-attachments/assets/b66915b6-2f76-4fb3-ba11-9eb2fb0320a8" />
+## Run Locally
+1. git clone [https://github.com/travletothefurureprogramming/Saloon-Jukebox.git](https://github.com/travletothefurureprogramming/Saloon-Jukebox.git)
+2. cd Saloon-Jukebox
+3. Open `index.html` in your browser or code editor.
 
----
-
-## 🌟 Features
-
-* **🎵 Saloon Playlist:** Browse a built-in library of western-themed tracks.
-* **📜 Live Queue:** Add tracks to a shared playlist queue that plays automatically in sequence.
-* **🎛️ Audio Controls:** Play, pause, skip, and adjust the volume seamlessly using the HTML5 Web Audio API.
-* **🎨 Wild West UI:** Styled cleanly with Tailwind CSS for a dark, immersive saloon atmosphere.
-* **📱 Fully Responsive:** Works smoothly on desktop and mobile browsers.
-
----
-
-## 🛠️ Built With
-
-* **HTML5** – Markup structure & audio management
-* **Tailwind CSS** – Styling and layout design
-* **Vanilla JavaScript** – Queue state management and DOM rendering
-
----
-
-## 🚀 Quick Start / Local Installation
-
-To run this project locally on your machine, follow these simple steps:
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/travletothefurureprogramming/Saloon-Jukebox.git
-   ```
-
-2. **Navigate to the project folder:**
-   ```bash
-   cd Saloon-Jukebox
-   ```
-
-3. **Open `index.html`:**
-   Double-click the `index.html` file or open it using a live server extension in your code editor (like VS Code).
-
----
-
-## 📄 License
-
-This project is open-source and available under the [MIT License](LICENSE).
+## License
+MIT
