@@ -7,6 +7,8 @@
 
 Welcome traveler! The Dustline saloon has plenty of speakers, but nobody to spin the records. **Jukebox Saloon** is a lightweight, zero-install web application that lets anyone queue up classic western tunes and enjoy them right inside the browser.
 
+<img width="1916" height="911" alt="image" src="https://github.com/user-attachments/assets/b66915b6-2f76-4fb3-ba11-9eb2fb0320a8" />
+
 ---
 
 ## 🌟 Features
